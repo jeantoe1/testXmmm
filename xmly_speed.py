@@ -23,7 +23,11 @@ cookies1 = ""
 cookies2 = ""
 
 cookiesList = [cookies1, ]   # 多账号准备
-
+# 通知服务
+BARK = ''                   # bark服务,自行搜索; secrets可填;形如jfjqxDx3xxxxxxxxSaK的字符串
+SCKEY = ''                  # Server酱的SCKEY; secrets可填
+TG_BOT_TOKEN = ''           # telegram bot token 自行申请
+TG_USER_ID = ''             # telegram 用户ID
 # 默认不自动提现
 autoTakeOut = False
 # 提现金额
@@ -42,7 +46,17 @@ if "XMLY_SPEED_COOKIE" in os.environ:
         cookiesList.append(line)
 if "AUTO_TAKE_OUT" in os.environ:
     autoTakeOut = os.environ["AUTO_TAKE_OUT"]
-
+    # GitHub action运行需要填写对应的secrets
+    if "BARK" in os.environ and os.environ["BARK"]:
+        BARK = os.environ["BARK"]
+        print("BARK 推送打开")
+    if "SCKEY" in os.environ and os.environ["SCKEY"]:
+        BARK = os.environ["SCKEY"]
+        print("serverJ 推送打开")
+    if "TG_BOT_TOKEN" in os.environ and os.environ["TG_BOT_TOKEN"] and "TG_USER_ID" in os.environ and os.environ["TG_USER_ID"]:
+        TG_BOT_TOKEN = os.environ["TG_BOT_TOKEN"]
+        TG_USER_ID = os.environ["TG_USER_ID"]
+        print("Telegram 推送打开")
 # 自定义设备命名,非必须 ;devices=["iPhone7P","huawei"];与cookiesList对应
 devices = []
 notify_time = 19                            # 通知时间,24小时制,默认19
@@ -1067,6 +1081,8 @@ def run():
             message += f"\n"
 
         send(title=title, content=message)
-
+        bark("⏰ 喜马拉雅极速版", message)
+        serverJ("⏰ 喜马拉雅极速版", message)
+        telegram_bot("⏰ 喜马拉雅极速版", message)
 if __name__ == "__main__":
     run()
